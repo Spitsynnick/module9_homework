@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>       
+        //  XML, который требуется парсить:
+        const xmlString = ` 
+        <list>
+            <student>
+                <name lang="en">
+                    <first>Ivan</first>
+                    <second>Ivanov</second>
+                </name>
+                <age>35</age>
+                <prof>teacher</prof>
+            </student>
+            <student>
+                <name lang="ru">
+                    <first>Петр</first>
+                    <second>Петров</second>
+                </name>
+                <age>58</age>
+                <prof>driver</prof>
+            </student>
+        </list>
+        `;
+
+        const parser = new DOMParser(); // создаем экземпляр класса DOMParser
+
+        const xmlDOM = parser.parseFromString(xmlString, "text/xml"); // парсинг XML
+
+        const listNode = xmlDOM.querySelector("list"); // получаем верхний DOM-узел list
+        const students = listNode.querySelectorAll("student"); // получаем NodeList c 2-мя узлами student
+        
+        const studentsArr = []; // создаем пустой массив со студентами
+
+        students.forEach(student => { 
+            // перебираем NodeList и получаем все необходимые DOM-узлы и аттрибуты:
+            const nameNode = student.querySelector("name"); // DOM-узел name
+            const langAttr = nameNode.getAttribute("lang"); // аттрибут lang
+            const firstNode = nameNode.querySelector("first"); // DOM-узел first
+            const secondNode = nameNode.querySelector("second"); // DOM-узел second
+            const ageNode = student.querySelector("age"); // DOM-узел age
+            const profNode = student.querySelector("prof"); // DOM-узел prof
+
+            // добавляем в массив со студентами соответствующие данные в элеметах и аттрибутах DOM-узлов:
+            studentsArr.push({name: firstNode.textContent + " " + secondNode.textContent, 
+                              age: Number(ageNode.textContent), 
+                              prof: profNode.textContent, 
+                              lang: langAttr});
+        });
+
+        // записываем полученный массив в результирующий объект:
+        const result = {
+            list: studentsArr
+        };
+
+        // проверка:      
+        console.log(result);
+        // результат:
+        // {list: [ {name: 'Ivan Ivanov', age: 35, prof: 'teacher', lang: 'en'},
+        //           name: 'Петр Петров', age: 58, prof: 'driver', lang: 'ru'} ] }
+            
+    </script>    
+</body>
+</html>
