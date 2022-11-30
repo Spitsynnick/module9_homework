@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .wrapper {
+            margin: 0 auto;
+            display: flex; 
+            flex-direction: column;           
+            align-items: center;
+            width: 800px;            
+        }        
+
+        .btn {  
+            cursor: pointer;                      
+            border: none;
+            outline: none;           
+            box-shadow: none;            
+            margin: 5px 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #b36308;
+            transition: 0.3s;           
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141,150,178,.3);
+            transform: scale(1.05);
+        }
+
+        .result {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;            
+        }
+
+        .card {
+            width: 200px;
+            margin: 20px;
+        }
+
+        .card_image {
+            display: block;
+            width: 200px;
+            height: 150px;
+        }
+
+        .card_author {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="input">        
+            <label for="number">Введите число от 1 до 10:</label>
+            <input type="number" id="number">               
+            <button class = "btn">Сделать запрос</button>
+        </div>
+        
+        <div class="result"></div>
+    </div>
+    
+    <script> 
+    
+        const btn = document.querySelector(".btn"); // получить кнопку, по нажатию которой будет отправляться запрос        
+        const resultDiv = document.querySelector(".result"); // получть div для вывода результата
+
+        btn.addEventListener("click", () => { // обработчик нажатия кнопки для запроса
+            let value = document.querySelector("#number").value; // получить данные из input
+
+            if (!value || (value < 1) || (value > 10)) { // если пользователь ничего не ввел/ввел некорректное число, - вывести в div уведомление
+                resultDiv.innerHTML = "Число вне диапазона от 1 до 10";            
+            } else { // если введены корректные данные, - вызвать функцию useRequest
+                useRequest(`https://picsum.photos/v2/list/?limit=${value}`, addCards);
+            }
+        });
+       
+        const useRequest = (url, cb) => { // функция, осуществляющая запрос к серверу 
+            let xhr = new XMLHttpRequest(); // создать экзепляр класса XMLHttpRequest
+            xhr.open('GET', url, true); // инициализировать запрос
+
+            xhr.onload = () => { // обрабочик ответа сервера
+                if (xhr.status != 200) { 
+                    console.log('Статус ответа: ', xhr.status); // в случае ошибки HTTP вывести в консоль статус ответа
+                } else {                
+                    cb(JSON.parse(xhr.response)); // в случае успеха распарсить ответ и передать функции addCards                        
+                }
+            };    
+
+            xhr.onerror = () => { // обрабочик ошибки (не HTTP): вывести в консоль статус ответа        
+                console.log('Ошибка! Статус ответа: ', xhr.status);  
+            };
+
+            xhr.send(); // отправить запрос                
+        };
+        
+        const addCards = (apiData) => { // функция, обрабатывающая ответ сервера: создать карточки и добавить в div с результатом
+            let cards = "";
+
+            apiData.forEach(item => {
+                const cardBlock = `<div class="card">
+                                        <img src="${item.download_url}" class="card_image"/>
+                                        <p class="card_author">${item.author}</p>
+                                  </div>`;
+                cards = cards + cardBlock;
+            });            
+                
+            resultDiv.innerHTML = cards;
+        };         
+        
+    </script>    
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .wrapper {
+            margin: 0 auto;
+            display: flex; 
+            flex-direction: column;           
+            align-items: center;
+            width: 1000px;            
+        }        
+
+        .btn {  
+            cursor: pointer;                      
+            border: none;
+            outline: none;           
+            box-shadow: none;            
+            margin: 5px 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #b36308;
+            transition: 0.3s;           
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141,150,178,.3);
+            transform: scale(1.05);
+        }
+
+        .result {
+            display: flex;
+            justify-content: center;                        
+        }
+
+        .card_image {
+            display: block; 
+            margin-top: 20px;
+            border: 1px solid rgb(3, 3, 3);          
+        }       
+    </style>
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="input">        
+            <label for="number1">Введите первое число:</label>
+            <input type="number" id="number1"> 
+            <label for="number2">Введите второе число:</label>
+            <input type="number" id="number2">              
+            <button class = "btn">Submit</button>
+        </div>
+        
+        <div class="result"></div>
+    </div>
+    
+    <script>     
+        const btn = document.querySelector(".btn"); // получить кнопку, по нажатию которой будет отправляться запрос        
+        const resultDiv = document.querySelector(".result"); // получть div для вывода результата
+
+        btn.addEventListener("click", () => { // обработчик нажатия кнопки для запроса
+            let number1 = document.querySelector("#number1").value; // получить данные из первого input
+            let number2 = document.querySelector("#number2").value; // получить данные из второго input
+
+            if (!validateNumber(number1) || !validateNumber(number2)) {// если пользователь ничего не ввел/ввел некорректные числа, - вывести в div уведомление
+                resultDiv.innerHTML = "Одно из чисел вне диапазона от 100 до 300";
+            } else { // если введены корректные данные, - вызвать функцию useRequest
+                useRequest(`https://picsum.photos/${number1}/${number2}`, addCard);
+            }
+        });
+
+        const validateNumber = (number) => { // функция для проверки корректного ввода чисел
+            if ((number < 100) || (number > 300) || isNaN(+number)) {
+                return false;
+            };
+            return true;
+        }
+       
+        const useRequest = (url, cb) => { // функция, осуществляющая запрос к серверу 
+            fetch(url)
+                .then((response) => {
+                    console.log(response); // Сервер возвращает объект Response {type: 'cors', url: 'https://i.picsum.photos/id/797/300/300.jpg?hmac=izmna-y6Fs6GxhgwYn4CkIZHB38fB-UL1meUGgPFO0k', redirected: true, status: 200, ok: true, …}                    
+                    cb(response); // передать ответ сервера в callback
+                })                
+                .catch(() => { 
+                    console.log('error'); // в случае ошибки вывести в консоль
+                });
+        };
+        
+        const addCard = (apiData) => { // функция, обрабатывающая ответ сервера: создать карточку и добавить в div с результатом
+            const card = `<img src="${apiData.url}" class="card_image"/>`;
+                
+            resultDiv.innerHTML = card;
+        };         
+        
+    </script>    
+</body>
+</html>

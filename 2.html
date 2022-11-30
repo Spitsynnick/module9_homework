@@ -26,10 +26,11 @@
         }
         `;
 
-        const result = JSON.parse(jsonString); // парсинг JSON, получаем объект JS
+        const result = JSON.parse(jsonString); // парсинг JSON, получить объект JS
+        
         
         result["list"].forEach(element => {
-            element["age"] = Number(element["age"]); // преобразовываем каждое значение age к типу Number            
+            element["age"] = Number(element["age"]); // преобразовать каждое значение age к типу Number            
         });
 
         // проверка:

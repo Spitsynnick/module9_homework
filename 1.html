@@ -30,17 +30,17 @@
         </list>
         `;
 
-        const parser = new DOMParser(); // создаем экземпляр класса DOMParser
+        const parser = new DOMParser(); // создать экземпляр класса DOMParser
 
         const xmlDOM = parser.parseFromString(xmlString, "text/xml"); // парсинг XML
 
-        const listNode = xmlDOM.querySelector("list"); // получаем верхний DOM-узел list
-        const students = listNode.querySelectorAll("student"); // получаем NodeList c 2-мя узлами student
+        const listNode = xmlDOM.querySelector("list"); // получить верхний DOM-узел list
+        const students = listNode.querySelectorAll("student"); // получить NodeList c 2-мя узлами student
         
-        const studentsArr = []; // создаем пустой массив со студентами
+        const studentsArr = []; // создать пустой массив со студентами
 
         students.forEach(student => { 
-            // перебираем NodeList и получаем все необходимые DOM-узлы и аттрибуты:
+            // перебрать NodeList и получить все необходимые DOM-узлы и аттрибуты:
             const nameNode = student.querySelector("name"); // DOM-узел name
             const langAttr = nameNode.getAttribute("lang"); // аттрибут lang
             const firstNode = nameNode.querySelector("first"); // DOM-узел first
@@ -48,14 +48,14 @@
             const ageNode = student.querySelector("age"); // DOM-узел age
             const profNode = student.querySelector("prof"); // DOM-узел prof
 
-            // добавляем в массив со студентами соответствующие данные в элеметах и аттрибутах DOM-узлов:
+            // добавить в массив со студентами соответствующие данные в элеметах и аттрибутах DOM-узлов:
             studentsArr.push({name: firstNode.textContent + " " + secondNode.textContent, 
                               age: Number(ageNode.textContent), 
                               prof: profNode.textContent, 
                               lang: langAttr});
         });
 
-        // записываем полученный массив в результирующий объект:
+        // записать полученный массив в результирующий объект:
         const result = {
             list: studentsArr
         };
